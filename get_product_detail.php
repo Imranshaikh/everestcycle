@@ -1,15 +1,13 @@
 <?php
 
-echo "<h1>GAYA!!!!!!!!!!</h1>";
-/*include("includes/dbconnect.php");
+include("includes/dbconnect.php");
 include("includes/function.php");
 
-$mcode = $_REQUEST["code"];
-
+$mcode = $_REQUEST["id"];
 
 $get_data = mysql_query("SELECT * FROM `prodmain` WHERE `code`='$mcode'")or die(mysql_error());
 $row = mysql_fetch_object($get_data);
-        
+
 $type = $row->type;
 $company = $row->company;
 $brand = $row->brand;
@@ -37,6 +35,6 @@ echo "<div class='span8'>";
 echo "<img src='$largeimg' style='width:100%;height:100%;'>";
 echo "</div>";
 echo "</div>";
-echo "</div>";*/
+echo "</div>";
 
 ?>

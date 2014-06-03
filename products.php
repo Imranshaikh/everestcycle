@@ -91,39 +91,19 @@ include("includes/site_header.php");
                 </div>
                 <div class="row">
                   <div class="col-md-6">
-                    <table class="table table-bordered" id="tran">
+                    <table class="table table-bordered hidden" id="tran">
                       <thead>
                         <th>Sr No.</th>
                         <th>Title</th>
                         <th>Description</th>
                       </thead>
-                      <!-- <tr>
-                        <td>Sr No.</th>
-                        <td>Title</th>
-                        <td>Description</th>
-                      </tr>
-                      <tr>
-                        <td>Sr No.</th>
-                        <td>Title</th>
-                        <td>Description</th>
-                      </tr>
-                      <tr>
-                        <td>Sr No.</th>
-                        <td>Title</th>
-                        <td>Description</th>
-                      </tr>
-                      <tr>
-                        <td>Sr No.</th>
-                        <td>Title</th>
-                        <td>Description</th>
-                      </tr> -->
                     </table>
                   </div>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default inverted" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-default inverted" id="close" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
@@ -161,12 +141,25 @@ include("includes/site_header.php");
         var data = JSON.parse(response);
         $("#myModal .modal-body img").attr('src', data.largeimg);
         $("#myModal .modal-body #title").html(data.title);
-        var srno = Object.keys(data.srno).length;
 
-        console.log(srno);
-        console.log(data.srno);
-        console.log(data.ttitle);
-        console.log(data.description);
+        if(data.srno){
+          var srnolen = Object.keys(data.srno).length;
+          var row = "";
+          if (srnolen > 0){
+            for(var i = 0; i <= srnolen; i++){
+              if(data.srno[i] && data.ttitle[i] && data.description[i]){
+                row += "<tr><td>"+ data.srno[i] +"</td><td>"+ data.ttitle[i] +"</td><td>"+ data.description[i] +"</td></tr>";
+              }
+            }
+            if(row != ""){
+              $("#myModal .modal-body #tran").append(row).removeClass("hidden");
+            }
+          }
+        }else{
+          $("#myModal .modal-body #tran tbody").remove();
+          $("#myModal .modal-body #tran").addClass("hidden");
+        }
+
       });
 
       $(".modal-body").css('max-height','480px');

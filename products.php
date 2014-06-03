@@ -45,63 +45,89 @@ include("includes/site_header.php");
             <div class="row">
 
               <ul class="isotope-grid" data-sort-id="gallery">
+                <form id="my_form" action="products.php" method="post">
+
                 <?php
                   while($row = mysql_fetch_object($qry)){
                     $product_id = $row->code ;
                     $img = $row->smallimg;
                     $title = $row->title;
 
-                  #get_product_detail.php?id=$row->code
+                    echo "<input name='product_id' type='hidden' value='".$product_id."' />";
+
                     echo '<li class="col-md-3 col-sm-3 grid-item post format-link">';
                     echo '<div class="grid-item-inner">';
                     // echo "<a href='#' data-target='get_product_detail.php?id=$row->code' data-toggle='modal' data-target='#myModal'  class='media-box'>";
-                    echo "<a href='' data-id='" . $product_id . "' class='productDetail' data-toggle='modal' data-target='#myModal' >";
+                    echo "<a href='' data-id='".$product_id."' data-toggle='modal' data-target='#myModal' class='productDetail'>";
                     echo "<img src='$img' alt='$title' style=height:137px;width:230px;> </a>";
                     echo "<span style='float:left;color:#007F7B;'>MRP: 350000</span>";
                     echo "<span style='float:right;color:#B22222;'>ERP: 250000</span>";
                     echo "<hr/>";
                     echo "</div>";
                     echo "</li>";
+
                   }
                 ?>
-
+                </form>
               </ul>
             </div>
           </div>
         </div>
       </div>
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="myModalLabel" style="text-align: center;">Product Description</h4>
-          </div>
-          <div class="modal-body">
-            <form action="get_product_details.php" method="POST" >
-              <input type="hidden" name="prod_id" id="prod_id" />
-              <?php
-                // $prod_id = "<input type='hidden' name='product_id' id='product_id' />";
-
-                // echo $product_id;
-                // echo "$maindb";
-                // $get_product = mysql_query("SELECT * FROM `prodmain` WHERE `code`='$prod_id'")or die(mysql_error());
-                // $product = mysql_fetch_assoc($get_product);
-                // echo "<p>";
-                // var_dump($product);
-
-                var_dump($_POST['prod_id']);
-
-              ?>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default inverted" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+      <div class="modal fade" id="myModal" style="display:none" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel" style="text-align: center;">Product Description</h4>
+            </div>
+            <div class="modal-body">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-6">
+                    <center><div id="title"></div></center>
+                    <img>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <table class="table table-bordered" id="tran">
+                      <thead>
+                        <th>Sr No.</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                      </thead>
+                      <!-- <tr>
+                        <td>Sr No.</th>
+                        <td>Title</th>
+                        <td>Description</th>
+                      </tr>
+                      <tr>
+                        <td>Sr No.</th>
+                        <td>Title</th>
+                        <td>Description</th>
+                      </tr>
+                      <tr>
+                        <td>Sr No.</th>
+                        <td>Title</th>
+                        <td>Description</th>
+                      </tr>
+                      <tr>
+                        <td>Sr No.</th>
+                        <td>Title</th>
+                        <td>Description</th>
+                      </tr> -->
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default inverted" data-dismiss="modal">Close</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
   <footer class="site-footer-bottom">
     <div class="container">
       <div class="row">
@@ -114,7 +140,6 @@ include("includes/site_header.php");
       </div>
     </div>
   </footer>
-
   <script src="js/jquery-2.0.0.min.js"></script> <!-- Jquery Library Call -->
   <script src="plugins/prettyphoto/js/prettyphoto.js"></script> <!-- PrettyPhoto Plugin -->
   <script src="js/helper-plugins.js"></script> <!-- Plugins -->
@@ -127,13 +152,27 @@ include("includes/site_header.php");
 
   <script type="text/javascript">
 
-    $(".productDetail").click(function(){
-      var productId = $(this).attr('data-id');
-      $('.modal-body #prod_id').val(productId);
+    $(".productDetail").on("click", function(e){
+      e.preventDefault();
 
-      // productId = $(this).attr("href");
+      var id = $(this).data('id');
 
-      // $(".modal-body #product_id").val(productId);
+      $.post("getid.php", { id: id }, function(response){
+        var data = JSON.parse(response);
+        $("#myModal .modal-body img").attr('src', data.largeimg);
+        $("#myModal .modal-body #title").html(data.title);
+        var srno = Object.keys(data.srno).length;
+
+        console.log(srno);
+        console.log(data.srno);
+        console.log(data.ttitle);
+        console.log(data.description);
+      });
+
+      $(".modal-body").css('max-height','480px');
+      $(".modal-body").css('overflow-y','scroll');
+      $(".modal-body").css('overflow-x','hidden');
+
     });
 
   </script>

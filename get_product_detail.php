@@ -6,7 +6,7 @@ include("includes/function.php");
 $mcode = $_REQUEST["id"];
 
 $get_data = mysql_query("SELECT * FROM `prodmain` WHERE `code`='$mcode'")or die(mysql_error());
-$row = mysql_fetch_object($get_data);
+$row = mysql_fetch_assoc($get_data);
 
 $type = $row->type;
 $company = $row->company;

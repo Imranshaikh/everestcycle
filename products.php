@@ -8,8 +8,6 @@ $qry = mysql_query("SELECT * FROM `$maindb`")or die(mysql_error());
 
 $num = mysql_num_rows($qry);
 
-#browse($num);
-
 include("includes/site_header.php");
 ?>
   <div class="nav-backed-header parallax" style="background-image:url(banner.jpg);">
@@ -23,30 +21,27 @@ include("includes/site_header.php");
       </div>
   </div>
   <div class="notice-bar">
-      <div class="container">
-          <div class="row">
-              <ul class="top-navigation hidden-sm hidden-xs" style="float:left;padding: 0px;">
-                  <li><a href="#"><img src="brands/1.png" style="width:100px;height:auto;"></a></li>
-                  <li><a href="#"><img src="brands/2.png" style="width:100px;height:auto;"></a></li>
-                  <li><a href="#"><img src="brands/3.png" style="width:100px;height:auto;"></a></li>
-                  <li><a href="#"><img src="brands/4.png" style="width:100px;height:auto;"></a></li>
-                  <li><a href="#"><img src="brands/5.png" style="width:100px;height:auto;"></a></li>
-                  <li><a href="#"><img src="brands/6.png" style="width:100px;height:auto;"></a></li>
-                  <li><a href="#"><img src="brands/7.gif" style="width:100px;height:auto;"></a></li>
-                  <li></li>
-              </ul>
-              <div class="col-md-2 col-sm-6 hidden-xs"> <a href="#" class="btn btn-primary btn-lg btn-block">All Brands</a> </div>
-          </div>
+    <div class="container">
+      <div class="row">
+          <ul class="top-navigation hidden-sm hidden-xs" style="float:left;padding: 0px;">
+              <li><a href="#"><img src="brands/1.png" style="width:100px;height:auto;"></a></li>
+              <li><a href="#"><img src="brands/2.png" style="width:100px;height:auto;"></a></li>
+              <li><a href="#"><img src="brands/3.png" style="width:100px;height:auto;"></a></li>
+              <li><a href="#"><img src="brands/4.png" style="width:100px;height:auto;"></a></li>
+              <li><a href="#"><img src="brands/5.png" style="width:100px;height:auto;"></a></li>
+              <li><a href="#"><img src="brands/6.png" style="width:100px;height:auto;"></a></li>
+              <li><a href="#"><img src="brands/7.gif" style="width:100px;height:auto;"></a></li>
+              <li></li>
+          </ul>
+          <div class="col-md-2 col-sm-6 hidden-xs"> <a href="#" class="btn btn-primary btn-lg btn-block">All Brands</a> </div>
       </div>
     </div>
+  </div>
     <div class="main" role="main">
       <div id="content" class="content full">
         <div class="container">
             <div class="row">
-
               <ul class="isotope-grid" data-sort-id="gallery">
-                <form id="my_form" action="products.php" method="post">
-
                 <?php
                   while($row = mysql_fetch_object($qry)){
                     $product_id = $row->code ;
@@ -54,10 +49,8 @@ include("includes/site_header.php");
                     $title = $row->title;
 
                     echo "<input name='product_id' type='hidden' value='".$product_id."' />";
-
                     echo '<li class="col-md-3 col-sm-3 grid-item post format-link">';
                     echo '<div class="grid-item-inner">';
-                    // echo "<a href='#' data-target='get_product_detail.php?id=$row->code' data-toggle='modal' data-target='#myModal'  class='media-box'>";
                     echo "<a href='' data-id='".$product_id."' data-toggle='modal' data-target='#myModal' class='productDetail'>";
                     echo "<img src='$img' alt='$title' style=height:137px;width:230px;> </a>";
                     echo "<span style='float:left;color:#007F7B;'>MRP: 350000</span>";
@@ -65,10 +58,8 @@ include("includes/site_header.php");
                     echo "<hr/>";
                     echo "</div>";
                     echo "</li>";
-
                   }
                 ?>
-                </form>
               </ul>
             </div>
           </div>
@@ -84,7 +75,7 @@ include("includes/site_header.php");
             <div class="modal-body">
               <div class="container">
                 <div class="row">
-                  <div class="col-md-6">
+                  <div class="col-md-6" style="padding-bottom:10px;">
                     <center><div id="title"></div></center>
                     <img>
                   </div>
@@ -141,7 +132,6 @@ include("includes/site_header.php");
         var data = JSON.parse(response);
         $("#myModal .modal-body img").attr('src', data.largeimg);
         $("#myModal .modal-body #title").html(data.title);
-
         if(data.srno){
           var srnolen = Object.keys(data.srno).length;
           var row = "";

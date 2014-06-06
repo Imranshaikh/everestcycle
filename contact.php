@@ -41,15 +41,14 @@ if (isset($_POST['submit'])) {
     if(strlen($output) == 0) {
       $to = "sales@everestcycle.com";
       $subject = "ENQUIRY FROM EVERESTCYLCE WEBSITE FROM";
-      $from = 'From: '. $email ;
       $message = 'Name: '. $name ."\r\n".
               'Contact no: '. $contact. "\r\n".
-              'Message: '. $comment ;
-
-      if(mail($to, $subject, $message, $from)){
+              'Message: '. $comment . "\r\n".
+              'Email'. $email;
+      if(mail($to, $subject, $message)){
           $output = "<div class='alert alert-success'><button type='button' class='close' data-dismiss='alert'>x</button>Thank you, we will get back to you soon.</div>";
       }else{
-          $output = "<div class='alert alert-error'><button type='button' class='close' data-dismiss='alert'>x</button>Oops! something went wrong please try again.</div>";
+          $output = "<div class='alert alert-error'><button type='button' class='close' data-dismiss='alert'>x</button>Oops! email not sent.</div>";
       }
     }
   }

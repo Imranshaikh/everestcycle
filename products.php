@@ -35,6 +35,74 @@ include("includes/site_header.php");
           </ul>
           <div class="col-md-2 col-sm-6 hidden-xs"> <a href="#" class="btn btn-primary btn-lg btn-block">All Brands</a> </div>
       </div>
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table table-bordered">
+            <tr>
+              <td>Company</td>
+              <td>Brand</td>
+              <td>Category</td>
+              <td>Subcategory</td>
+            </tr>
+            <tr>
+              <td>
+                <?php
+                  $getcomp = mysql_query("SELECT * FROM `company`")or die(mysql_error());
+                ?>
+
+                <select name="company[]" id="company" multiple="true" onchange="autofilter(this.id, $(this).val())">
+                  <option value=""></option>
+                <?php
+                  while ($comp = mysql_fetch_assoc($getcomp)) {
+                    echo "<option value='".$comp['code']."'>". $comp['name'] ."</option>";
+                  }
+                ?>
+                </select>
+              </td>
+              <td>
+                <?php
+                  $getbrand = mysql_query("SELECT * FROM `brand`")or die(mysql_error());
+                ?>
+                <select name="brand">
+                  <option value=""></option>
+                <?php
+                  while ($brand = mysql_fetch_assoc($getbrand)) {
+                    echo "<option value='".$brand['code']."'>". $brand['name'] ."</option>";
+                  }
+                ?>
+                </select>
+              </td>
+              <td>
+                <?php
+                  $getcat = mysql_query("SELECT * FROM `category`")or die(mysql_error());
+                ?>
+                <select name="category">
+                  <option value=""></option>
+                <?php
+                  while ($cat = mysql_fetch_assoc($getcat)) {
+                    echo "<option value='".$cat['code']."'>". $cat['name'] ."</option>";
+                  }
+                ?>
+                </select>
+
+              </td>
+              <td>
+                <?php
+                  $getsubcat = mysql_query("SELECT * FROM `subcat`")or die(mysql_error());
+                 ?>
+                 <select name="subcategory">
+                  <option value=""></option>
+                <?php
+                  while ($subcat = mysql_fetch_assoc($getsubcat)) {
+                    echo "<option value='".$subcat['code']."'>". $subcat['name'] ."</option>";
+                  }
+                ?>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
     <div class="main" role="main">
@@ -122,6 +190,26 @@ include("includes/site_header.php");
   <script src="plugins/countdown/js/jquery.countdown.min.js"></script> <!-- Jquery Timer -->
 
   <script type="text/javascript">
+
+    function autofilter(inputId,values) {
+      var compObj = {};
+      console.log(values);
+      // return;
+      alert(1);
+      compObj[inputId] = values;
+      $.ajax({
+        type: "POST",
+        url: "filter.php",
+        data: {company:compObj},
+        success: function(data) {
+          // var mdata = JSON.parse(data);
+          alert(data);
+            // $('#autosavenotify').text(msg);
+          console.log(data);
+        }
+      });
+    }
+
 
     $(".productDetail").on("click", function(e){
       e.preventDefault();

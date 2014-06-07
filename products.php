@@ -63,7 +63,7 @@ include("includes/site_header.php");
                 <?php
                   $getbrand = mysql_query("SELECT * FROM `brand`")or die(mysql_error());
                 ?>
-                <select name="brand">
+                <select name="brand[]" id="brand" multiple="true" onchange="autofilter(this.id, $this.val())">
                   <option value=""></option>
                 <?php
                   while ($brand = mysql_fetch_assoc($getbrand)) {
@@ -76,7 +76,7 @@ include("includes/site_header.php");
                 <?php
                   $getcat = mysql_query("SELECT * FROM `category`")or die(mysql_error());
                 ?>
-                <select name="category">
+                <select name="category[]" id="category" multiple="true" onchange="autofilter(this.id, $this.val())">
                   <option value=""></option>
                 <?php
                   while ($cat = mysql_fetch_assoc($getcat)) {
@@ -90,7 +90,7 @@ include("includes/site_header.php");
                 <?php
                   $getsubcat = mysql_query("SELECT * FROM `subcat`")or die(mysql_error());
                  ?>
-                 <select name="subcategory">
+                 <select name="subcategory[]" id="subcategory" multiple="true" onchange="autofilter(this.id, $this.val())">
                   <option value=""></option>
                 <?php
                   while ($subcat = mysql_fetch_assoc($getsubcat)) {
@@ -196,15 +196,18 @@ include("includes/site_header.php");
       console.log(values);
       // return;
       alert(1);
-      compObj[inputId] = values;
+      compObj = values;
+      brandObj = values;
+      catObj = values;
+      subcatObj = values;
+
       $.ajax({
         type: "POST",
         url: "filter.php",
-        data: {company:compObj},
+        data: {company:compObj, brand:brandObj, category:catObj, subcategory:subcatObj },
         success: function(data) {
           // var mdata = JSON.parse(data);
           alert(data);
-            // $('#autosavenotify').text(msg);
           console.log(data);
         }
       });

@@ -14,7 +14,7 @@ $comp_where = $brand_where = $cat_where = $subcat_where = "";
 
 $comp_check = array_filter($mcomp);
 if(isset($mcomp) && !empty($comp_check)){
-  $compstr = implode(",", $mcode);
+  $compstr = implode(",", $mcomp);
   $comp_where = "AND `company` IN ($compstr)" ;
 }
 
@@ -40,7 +40,7 @@ if(isset($msubcat) && !empty($subcat_check)){
 
 
 
-$get_data = mysql_query("SELECT * FROM `prodmain` WHERE `code` != '' $comp_where $brand_where $cat_where $subcat_where") or die(mysql_error());
+$get_data = mysql_query("SELECT * FROM `prodmain` WHERE `code` != '' $comp_where $brand_where $cat_where $subcat_where ") or die(mysql_error());
 
 
 while($rec = mysql_fetch_assoc($get_data)){

@@ -50,8 +50,8 @@ include("includes/site_header.php");
                   $getcomp = mysql_query("SELECT * FROM `company`")or die(mysql_error());
                 ?>
 
-                <select name="company[]" id="company" multiple="true" onchange="autofilter(this.id, $(this).val())">
-                  <option value=""></option>
+                <select name="company[]" id="company" multiple="multiple" onchange="companyfilter(this.id, $(this).val())">
+                  <option value="">All Company</option>
                 <?php
                   while ($comp = mysql_fetch_assoc($getcomp)) {
                     echo "<option value='".$comp['code']."'>". $comp['name'] ."</option>";
@@ -63,8 +63,8 @@ include("includes/site_header.php");
                 <?php
                   $getbrand = mysql_query("SELECT * FROM `brand`")or die(mysql_error());
                 ?>
-                <select name="brand[]" id="brand" multiple="true" onchange="autofilter(this.id, $this.val())">
-                  <option value=""></option>
+                <select name="brand[]" id="brand" multiple="true" onchange="brandfilter(this.id, $(this).val())">
+                  <option value="">All Brand</option>
                 <?php
                   while ($brand = mysql_fetch_assoc($getbrand)) {
                     echo "<option value='".$brand['code']."'>". $brand['name'] ."</option>";
@@ -76,8 +76,8 @@ include("includes/site_header.php");
                 <?php
                   $getcat = mysql_query("SELECT * FROM `category`")or die(mysql_error());
                 ?>
-                <select name="category[]" id="category" multiple="true" onchange="autofilter(this.id, $this.val())">
-                  <option value=""></option>
+                <select name="category[]" id="category" multiple="true" onchange="categoryfilter(this.id, $(this).val())">
+                  <option value="">All Category</option>
                 <?php
                   while ($cat = mysql_fetch_assoc($getcat)) {
                     echo "<option value='".$cat['code']."'>". $cat['name'] ."</option>";
@@ -90,8 +90,8 @@ include("includes/site_header.php");
                 <?php
                   $getsubcat = mysql_query("SELECT * FROM `subcat`")or die(mysql_error());
                  ?>
-                 <select name="subcategory[]" id="subcategory" multiple="true" onchange="autofilter(this.id, $this.val())">
-                  <option value=""></option>
+                 <select name="subcategory[]" id="subcategory" multiple="true" onchange="subcatfilter(this.id, $(this).val())">
+                  <option value="">All Subcategory</option>
                 <?php
                   while ($subcat = mysql_fetch_assoc($getsubcat)) {
                     echo "<option value='".$subcat['code']."'>". $subcat['name'] ."</option>";
@@ -105,24 +105,24 @@ include("includes/site_header.php");
       </div>
     </div>
   </div>
+
     <div class="main" role="main">
       <div id="content" class="content full">
         <div class="container">
             <div class="row">
-              <ul class="isotope-grid" data-sort-id="gallery">
+              <ul class="isotope-grid" id="gallery" data-sort-id="gallery" style="overflow: inherit !important;">
                 <?php
                   while($row = mysql_fetch_object($qry)){
                     $product_id = $row->code ;
                     $img = $row->smallimg;
                     $title = $row->title;
-
                     echo "<input name='product_id' type='hidden' value='".$product_id."' />";
                     echo '<li class="col-md-3 col-sm-3 grid-item post format-link">';
                     echo '<div class="grid-item-inner">';
                     echo "<a href='' data-id='".$product_id."' data-toggle='modal' data-target='#myModal' class='productDetail'>";
                     echo "<img src='$img' alt='$title' style=height:137px;width:230px;> </a>";
-                    echo "<span style='float:left;color:#007F7B;'>MRP: 350000</span>";
-                    echo "<span style='float:right;color:#B22222;'>ERP: 250000</span>";
+                    echo "<span style='float:left;color:#007F7B;'>MRP: ". $row->mrp ."</span>";
+                    echo "<span style='float:right;color:#B22222;'>ERP: ". $row->erp ."</span>";
                     echo "<hr/>";
                     echo "</div>";
                     echo "</li>";
@@ -189,28 +189,177 @@ include("includes/site_header.php");
   <script src="plugins/flexslider/js/jquery.flexslider.js"></script> <!-- FlexSlider -->
   <script src="plugins/countdown/js/jquery.countdown.min.js"></script> <!-- Jquery Timer -->
 
+  <script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
+  <!-- <link rel="stylesheet" type="text/css" href="css/bootstrap-3.0.3.min.css"> -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-multiselect.css">
   <script type="text/javascript">
+    $(document).ready(function() {
+      $('#company').multiselect({
+        enableCaseInsensitiveFiltering: true,
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        maxHeight: 200
+      });
 
-    function autofilter(inputId,values) {
+      $('#brand').multiselect({
+        enableCaseInsensitiveFiltering: true,
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        maxHeight: 200
+      });
+
+      $('#category').multiselect({
+        enableCaseInsensitiveFiltering: true,
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        maxHeight: 200
+      });
+
+      $('#subcategory').multiselect({
+        enableCaseInsensitiveFiltering: true,
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        maxHeight: 200
+      });
+
+    });
+
+    function companyfilter(inputId,values) {
+      $(".container .row #gallery").empty();
       var compObj = {};
-      console.log(values);
-      // return;
-      alert(1);
       compObj = values;
-      brandObj = values;
-      catObj = values;
-      subcatObj = values;
-
       $.ajax({
         type: "POST",
         url: "filter.php",
-        data: {company:compObj, brand:brandObj, category:catObj, subcategory:subcatObj },
+        data: {company:compObj},
         success: function(data) {
-          // var mdata = JSON.parse(data);
-          alert(data);
-          console.log(data);
+          var mdata = JSON.parse(data);
+          var row = '';
+          for(var i = 0; i < mdata.length; i++){
+            var obj = mdata[i];
+            var imgsrc = escape(obj.smallimg) ;
+            row = "<input name='product_id' type='hidden' value='" + obj.code + "'>";
+            row += "<li class='col-md-3 col-sm-3 grid-item post format-link'>";
+            row += "<div class='grid-item-inner'>";
+            row += "<a href='' data-id='" + obj.code + "' data-toggle='modal' data-target='#myModal' class='productDetail'>";
+            row += "<img src='"+ imgsrc +"' alt='" + obj.title + "' style='height:137px;width:230px;'> </a>";
+            row += "<span style='float:left;color:#007F7B;'>MRP: " + obj.mrp + "</span>";
+            row += "<span style='float:right;color:#B22222;'>ERP: " + obj.erp + "</span>";
+            row += "<hr />";
+            row += "</div>";
+            row += "</li>";
+            if(row != ''){
+              $(".container .row #gallery").append(row);
+            }
+          }
         }
       });
+    }
+
+    function brandfilter(inputId,values) {
+      $(".container .row #gallery").empty();
+      var brandObj = {};
+      brandObj = values;
+      $.ajax({
+        type: "POST",
+        url: "filter.php",
+        data: {brand:brandObj},
+        success: function(data) {
+          var mdata = JSON.parse(data);
+          var row = '';
+          for(var i = 0; i < mdata.length; i++){
+            var obj = mdata[i];
+            var imgsrc = escape(obj.smallimg) ;
+            row = "<input name='product_id' type='hidden' value='" + obj.code + "'>";
+            row += "<li class='col-md-3 col-sm-3 grid-item post format-link'>";
+            row += "<div class='grid-item-inner'>";
+            row += "<a href='' data-id='" + obj.code + "' data-toggle='modal' data-target='#myModal' class='productDetail'>";
+            row += "<img src='"+ imgsrc +"' alt='" + obj.title + "' style='height:137px;width:230px;'> </a>";
+            row += "<span style='float:left;color:#007F7B;'>MRP: " + obj.mrp + "</span>";
+            row += "<span style='float:right;color:#B22222;'>ERP: " + obj.erp + "</span>";
+            row += "<hr />";
+            row += "</div>";
+            row += "</li>";
+            if(row != ''){
+              $(".container .row #gallery").append(row);
+            }
+          }
+        }
+      });
+    }
+
+    function categoryfilter(inputId,values) {
+      $(".container .row #gallery").empty();
+      var catObj = {};
+      catObj = values;
+      $.ajax({
+        type: "POST",
+        url: "filter.php",
+        data: {category:catObj},
+        success: function(data) {
+          var mdata = JSON.parse(data);
+          var row = '';
+          for(var i = 0; i < mdata.length; i++){
+            var obj = mdata[i];
+            var imgsrc = escape(obj.smallimg) ;
+            row = "<input name='product_id' type='hidden' value='" + obj.code + "'>";
+            row += "<li class='col-md-3 col-sm-3 grid-item post format-link'>";
+            row += "<div class='grid-item-inner'>";
+            row += "<a href='' data-id='" + obj.code + "' data-toggle='modal' data-target='#myModal' class='productDetail'>";
+            row += "<img src='"+ imgsrc +"' alt='" + obj.title + "' style='height:137px;width:230px;'> </a>";
+            row += "<span style='float:left;color:#007F7B;'>MRP: " + obj.mrp + "</span>";
+            row += "<span style='float:right;color:#B22222;'>ERP: " + obj.erp + "</span>";
+            row += "<hr />";
+            row += "</div>";
+            row += "</li>";
+            if(row != ''){
+              $(".container .row #gallery").append(row);
+            }
+          }
+        }
+      });
+    }
+
+    function subcatfilter(inputId,values) {
+      $(".container .row #gallery").empty();
+      var subcatObj = {};
+      subcatObj = values;
+      $.ajax({
+        type: "POST",
+        url: "filter.php",
+        data: {subcategory:subcatObj},
+        success: function(data) {
+          var mdata = JSON.parse(data);
+          var row = '';
+          for(var i = 0; i < mdata.length; i++){
+            var obj = mdata[i];
+            var imgsrc = escape(obj.smallimg) ;
+
+            row = "<input name='product_id' type='hidden' value='" + obj.code + "' />";
+            row += "<li class='col-md-3 col-sm-3 grid-item post format-link'>";
+            row += "<div class='grid-item-inner'>";
+            row += "<a href='' data-id='"+ obj.code +"' data-toggle='modal' data-target='#myModal' class='productDetail'>";
+            row += "<img src='"+ imgsrc +"' alt='" + obj.title + "' style='height:137px;width:230px;'> </a>";
+            row += "<span style='float:left;color:#007F7B;'>MRP: " + obj.mrp + "</span>";
+            row += "<span style='float:right;color:#B22222;'>ERP: " + obj.erp + "</span>";
+            row += "<hr />";
+            row += "</div>";
+            row += "</li>";
+
+            if(row !== ''){
+              $(".container .row #gallery").append(row);
+            }
+
+          }
+
+          if(row === ''){
+            $('.container .row #gallery').append("<div class='alert alert-warning'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button><strong>Warning!</strong> No Record Found</div>");
+          }
+
+        }
+
+      });
+
     }
 
 

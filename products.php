@@ -252,6 +252,10 @@ include("includes/site_header.php");
               $(".container .row #gallery").append(row);
             }
           }
+          if(row === ''){
+            $('.container .row #gallery').append("<div class='alert alert-warning'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button><strong>Warning!</strong> No Record Found</div>");
+          }
+
         }
       });
     }
@@ -273,7 +277,7 @@ include("includes/site_header.php");
             row = "<input name='product_id' type='hidden' value='" + obj.code + "'>";
             row += "<li class='col-md-3 col-sm-3 grid-item post format-link'>";
             row += "<div class='grid-item-inner'>";
-            row += "<a href='' data-id='" + obj.code + "' data-toggle='modal' data-target='#myModal' class='productDetail'>";
+            row += "<a href='' class='productDetail' data-id='" + obj.code + "' data-toggle='modal' onclick='productDetail' data-target='#myModal' >";
             row += "<img src='"+ imgsrc +"' alt='" + obj.title + "' style='height:137px;width:230px;'> </a>";
             row += "<span style='float:left;color:#007F7B;'>MRP: " + obj.mrp + "</span>";
             row += "<span style='float:right;color:#B22222;'>ERP: " + obj.erp + "</span>";
@@ -284,6 +288,10 @@ include("includes/site_header.php");
               $(".container .row #gallery").append(row);
             }
           }
+          if(row === ''){
+            $('.container .row #gallery').append("<div class='alert alert-warning'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button><strong>Warning!</strong> No Record Found</div>");
+          }
+
         }
       });
     }
@@ -316,6 +324,11 @@ include("includes/site_header.php");
               $(".container .row #gallery").append(row);
             }
           }
+
+          if(row === ''){
+            $('.container .row #gallery').append("<div class='alert alert-warning'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button><strong>Warning!</strong> No Record Found</div>");
+          }
+
         }
       });
     }
@@ -363,7 +376,7 @@ include("includes/site_header.php");
     }
 
 
-    $(".productDetail").on("click", function(e){
+    $(document).on("click", ".productDetail", function(e){
       e.preventDefault();
 
       var id = $(this).data('id');
